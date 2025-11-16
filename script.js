@@ -190,6 +190,189 @@ function applyLanguage(lang) {
             element.textContent = text;
         }
     });
+    
+    // Re-translate AI analysis if panel is open
+    if (aiAnalysisActive && lastAIAnalysis) {
+        updateAIPanelWithLanguage(lastAIAnalysis, lastAIAnalysis.indicators);
+    }
+}
+
+// Translate signal messages
+function translateSignal(signal, lang) {
+    if (lang === 'de') {
+        // Translate signal types
+        let message = signal.message;
+        
+        // RSI translations
+        message = message.replace('RSI Oversold', 'RSI Überverkauft');
+        message = message.replace('RSI Overbought', 'RSI Überkauft');
+        message = message.replace('Strong reversal potential', 'Starkes Umkehrpotenzial');
+        message = message.replace('Reversal risk high', 'Hohes Umkehrrisiko');
+        message = message.replace('Bullish territory', 'Bullisches Territorium');
+        message = message.replace('Bearish territory', 'Bärisches Territorium');
+        
+        // EMA translations
+        message = message.replace('Perfect EMA alignment', 'Perfekte EMA-Ausrichtung');
+        message = message.replace('Strong uptrend structure', 'Starke Aufwärtstrendstruktur');
+        message = message.replace('Strong downtrend structure', 'Starke Abwärtstrendstruktur');
+        message = message.replace('Price above key moving averages', 'Preis über wichtigen gleitenden Durchschnitten');
+        message = message.replace('Uptrend confirmed', 'Aufwärtstrend bestätigt');
+        message = message.replace('Price below key moving averages', 'Preis unter wichtigen gleitenden Durchschnitten');
+        message = message.replace('Downtrend confirmed', 'Abwärtstrend bestätigt');
+        message = message.replace('Mean reversion likely', 'Mittelwert-Rückkehr wahrscheinlich');
+        message = message.replace('above', 'über');
+        message = message.replace('below', 'unter');
+        
+        // MACD translations
+        message = message.replace('MACD bullish with positive momentum', 'MACD bullisch mit positivem Momentum');
+        message = message.replace('Trend acceleration', 'Trendbeschleunigung');
+        message = message.replace('MACD bearish with negative momentum', 'MACD bärisch mit negativem Momentum');
+        message = message.replace('Downward pressure', 'Abwärtsdruck');
+        message = message.replace('MACD bullish crossover', 'MACD bullischer Crossover');
+        message = message.replace('Momentum increasing', 'Momentum steigend');
+        message = message.replace('MACD bearish crossover', 'MACD bärischer Crossover');
+        message = message.replace('Momentum decreasing', 'Momentum fallend');
+        
+        // Stochastic translations
+        message = message.replace('Stochastic RSI oversold with bullish cross', 'Stochastischer RSI überverkauft mit bullischem Cross');
+        message = message.replace('Entry opportunity', 'Einstiegsgelegenheit');
+        message = message.replace('Stochastic RSI overbought with bearish cross', 'Stochastischer RSI überkauft mit bärischem Cross');
+        message = message.replace('Exit signal', 'Ausstiegssignal');
+        
+        // Bollinger Bands
+        message = message.replace('Price near lower Bollinger Band', 'Preis nahe unterem Bollinger Band');
+        message = message.replace('Oversold bounce likely', 'Überverkaufter Bounce wahrscheinlich');
+        message = message.replace('Price near upper Bollinger Band', 'Preis nahe oberem Bollinger Band');
+        message = message.replace('Overbought pullback likely', 'Überkaufter Pullback wahrscheinlich');
+        
+        // Volume
+        message = message.replace('Exceptional volume', 'Außergewöhnliches Volumen');
+        message = message.replace('avg', 'Durchschn');
+        message = message.replace('Strong trend confirmation', 'Starke Trendbestätigung');
+        message = message.replace('High volume', 'Hohes Volumen');
+        message = message.replace('Trend confirmation', 'Trendbestätigung');
+        message = message.replace('Low volume', 'Niedriges Volumen');
+        message = message.replace('Weak trend, be cautious', 'Schwacher Trend, Vorsicht');
+        
+        // Support/Resistance
+        message = message.replace('Near support at', 'Nahe Unterstützung bei');
+        message = message.replace('Bounce opportunity', 'Bounce-Gelegenheit');
+        message = message.replace('Near resistance at', 'Nahe Widerstand bei');
+        message = message.replace('Rejection risk', 'Ablehnungsrisiko');
+        
+        // Patterns
+        message = message.replace('bullish pattern', 'bullisches Muster');
+        message = message.replace('bearish pattern', 'bärisches Muster');
+        message = message.replace('detected', 'erkannt');
+        
+        // Smart Money
+        message = message.replace('Bullish Order Block', 'Bullischer Order Block');
+        message = message.replace('Bearish Order Block', 'Bärischer Order Block');
+        message = message.replace('Institutional support', 'Institutionelle Unterstützung');
+        message = message.replace('Institutional resistance', 'Institutioneller Widerstand');
+        
+        // Fibonacci
+        message = message.replace('Price near Fibonacci', 'Preis nahe Fibonacci');
+        message = message.replace('level', 'Niveau');
+        message = message.replace('Key decision point', 'Wichtiger Entscheidungspunkt');
+        
+        // Market Structure
+        message = message.replace('Market structure:', 'Marktstruktur:');
+        message = message.replace('Higher highs and higher lows confirmed', 'Höhere Hochs und höhere Tiefs bestätigt');
+        message = message.replace('Lower highs and lower lows confirmed', 'Tiefere Hochs und tiefere Tiefs bestätigt');
+        
+        // Volatility
+        message = message.replace('Extreme volatility', 'Extreme Volatilität');
+        message = message.replace('High risk environment', 'Hochrisiko-Umgebung');
+        message = message.replace('High volatility detected', 'Hohe Volatilität erkannt');
+        message = message.replace('Trade with caution', 'Mit Vorsicht handeln');
+        
+        // Strength indicators
+        const strengthMap = {
+            'Strong': 'Stark',
+            'Medium': 'Mittel',
+            'Info': 'Info',
+            'Very High': 'Sehr Hoch',
+            'High': 'Hoch',
+            'Extreme': 'Extrem'
+        };
+        
+        return {
+            ...signal,
+            message: message,
+            strength: strengthMap[signal.strength] || signal.strength
+        };
+    }
+    return signal;
+}
+
+// Update AI Panel with language support
+function updateAIPanelWithLanguage(prediction, indicators) {
+    // Update confidence
+    document.getElementById('confidenceValue').textContent = prediction.confidence.toFixed(0) + '%';
+    document.getElementById('confidenceFill').style.width = prediction.confidence + '%';
+    
+    // Update signals with translation
+    const signalList = document.getElementById('signalList');
+    signalList.innerHTML = '';
+    prediction.signals.forEach(signal => {
+        const translatedSignal = translateSignal(signal, currentLanguage);
+        const signalEl = document.createElement('div');
+        signalEl.className = `signal-item ${translatedSignal.type}`;
+        signalEl.innerHTML = `<strong>${translatedSignal.strength}:</strong> ${translatedSignal.message}`;
+        signalList.appendChild(signalEl);
+    });
+    
+    // Update positions with translation
+    const positionCards = document.getElementById('positionCards');
+    positionCards.innerHTML = '';
+    prediction.positions.forEach(pos => {
+        const posCard = document.createElement('div');
+        posCard.className = `position-card ${pos.type}`;
+        
+        const posType = currentLanguage === 'de' ? 
+            (pos.type === 'long' ? 'LONG Position' : 'SHORT Position') :
+            `${pos.type.toUpperCase()} Position`;
+        
+        const labels = currentLanguage === 'de' ? 
+            { entry: 'Einstieg:', target: 'Ziel:', stopLoss: 'Stop Loss:', profit: 'Potenzieller Gewinn:' } :
+            { entry: 'Entry:', target: 'Target:', stopLoss: 'Stop Loss:', profit: 'Potential Profit:' };
+        
+        posCard.innerHTML = `
+            <div class="position-type ${pos.type}">${posType}</div>
+            <div class="position-details">
+                <div class="position-row">
+                    <span class="position-label">${labels.entry}</span>
+                    <span class="position-value">$${pos.entry.toFixed(2)}</span>
+                </div>
+                <div class="position-row">
+                    <span class="position-label">${labels.target}</span>
+                    <span class="position-value">$${pos.target.toFixed(2)}</span>
+                </div>
+                <div class="position-row">
+                    <span class="position-label">${labels.stopLoss}</span>
+                    <span class="position-value">$${pos.stopLoss.toFixed(2)}</span>
+                </div>
+            </div>
+            <div class="position-profit">
+                ${labels.profit} <strong>${pos.potentialProfit.toFixed(2)}%</strong>
+            </div>
+        `;
+        positionCards.appendChild(posCard);
+    });
+    
+    // Update metrics
+    const trendText = currentLanguage === 'de' ?
+        (prediction.trend === 'bullish' ? 'BULLISCH' : prediction.trend === 'bearish' ? 'BÄRISCH' : 'NEUTRAL') :
+        prediction.trend.toUpperCase();
+    
+    document.getElementById('trendDirection').textContent = trendText;
+    document.getElementById('trendDirection').style.color = 
+        prediction.trend === 'bullish' ? 'var(--green)' : 
+        prediction.trend === 'bearish' ? 'var(--red)' : 'var(--text-primary)';
+    
+    document.getElementById('volatility').textContent = indicators.volatility.toFixed(2) + '%';
+    document.getElementById('nextTarget').textContent = '$' + prediction.targetPrice.toFixed(2);
 }
 
 // Load chart data from Binance API
@@ -1403,57 +1586,7 @@ function generateAdvancedSignals(indicators, trend, currentPrice, patterns, mark
 
 // Update AI Panel with results
 function updateAIPanel(prediction, indicators) {
-    // Update confidence
-    document.getElementById('confidenceValue').textContent = prediction.confidence.toFixed(0) + '%';
-    document.getElementById('confidenceFill').style.width = prediction.confidence + '%';
-    
-    // Update signals
-    const signalList = document.getElementById('signalList');
-    signalList.innerHTML = '';
-    prediction.signals.forEach(signal => {
-        const signalEl = document.createElement('div');
-        signalEl.className = `signal-item ${signal.type}`;
-        signalEl.innerHTML = `<strong>${signal.strength}:</strong> ${signal.message}`;
-        signalList.appendChild(signalEl);
-    });
-    
-    // Update positions
-    const positionCards = document.getElementById('positionCards');
-    positionCards.innerHTML = '';
-    prediction.positions.forEach(pos => {
-        const posCard = document.createElement('div');
-        posCard.className = `position-card ${pos.type}`;
-        posCard.innerHTML = `
-            <div class="position-type ${pos.type}">${pos.type.toUpperCase()} Position</div>
-            <div class="position-details">
-                <div class="position-row">
-                    <span class="position-label">Entry:</span>
-                    <span class="position-value">$${pos.entry.toFixed(2)}</span>
-                </div>
-                <div class="position-row">
-                    <span class="position-label">Target:</span>
-                    <span class="position-value">$${pos.target.toFixed(2)}</span>
-                </div>
-                <div class="position-row">
-                    <span class="position-label">Stop Loss:</span>
-                    <span class="position-value">$${pos.stopLoss.toFixed(2)}</span>
-                </div>
-            </div>
-            <div class="position-profit">
-                Potential Profit: <strong>${pos.potentialProfit.toFixed(2)}%</strong>
-            </div>
-        `;
-        positionCards.appendChild(posCard);
-    });
-    
-    // Update metrics
-    document.getElementById('trendDirection').textContent = prediction.trend.toUpperCase();
-    document.getElementById('trendDirection').style.color = 
-        prediction.trend === 'bullish' ? 'var(--green)' : 
-        prediction.trend === 'bearish' ? 'var(--red)' : 'var(--text-primary)';
-    
-    document.getElementById('volatility').textContent = indicators.volatility.toFixed(2) + '%';
-    document.getElementById('nextTarget').textContent = '$' + prediction.targetPrice.toFixed(2);
+    updateAIPanelWithLanguage(prediction, indicators);
 }
 
 // Draw AI Chart Annotations - Intelligent Support/Resistance/Trendlines
