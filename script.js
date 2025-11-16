@@ -38,19 +38,38 @@ function initializeChart() {
         return;
     }
 
+    // Detect mobile device
+    const isMobile = window.innerWidth <= 768;
+
     chart = LightweightCharts.createChart(container, {
         width: container.clientWidth,
         height: container.clientHeight,
         layout: {
             background: { color: '#1e222d' },
             textColor: '#d1d4dc',
+            fontSize: isMobile ? 11 : 12,
         },
         grid: {
-            vertLines: { color: '#2a2e39' },
-            horzLines: { color: '#2a2e39' },
+            vertLines: { 
+                color: '#2a2e39',
+                visible: !isMobile, // Hide vertical lines on mobile for cleaner look
+            },
+            horzLines: { 
+                color: '#2a2e39',
+            },
         },
         crosshair: {
             mode: LightweightCharts.CrosshairMode.Normal,
+            vertLine: {
+                width: isMobile ? 1 : 1,
+                color: '#758696',
+                style: 3,
+            },
+            horzLine: {
+                width: isMobile ? 1 : 1,
+                color: '#758696',
+                style: 3,
+            },
         },
         rightPriceScale: {
             borderColor: '#2a2e39',
@@ -58,15 +77,30 @@ function initializeChart() {
                 top: 0.1,
                 bottom: 0.1,
             },
+            visible: true,
         },
         timeScale: {
             borderColor: '#2a2e39',
             timeVisible: true,
             secondsVisible: false,
+            rightOffset: isMobile ? 5 : 10,
+            barSpacing: isMobile ? 6 : 8,
+            minBarSpacing: isMobile ? 2 : 3,
+        },
+        handleScroll: {
+            mouseWheel: !isMobile,
+            pressedMouseMove: true,
+            horzTouchDrag: true,
+            vertTouchDrag: true,
+        },
+        handleScale: {
+            axisPressedMouseMove: true,
+            mouseWheel: !isMobile,
+            pinch: true,
         },
     });
 
-    // Create candlestick series
+    // Create candlestick series with mobile-optimized settings
     candleSeries = chart.addCandlestickSeries({
         upColor: '#26a69a',
         downColor: '#ef5350',
@@ -74,19 +108,69 @@ function initializeChart() {
         borderDownColor: '#ef5350',
         wickUpColor: '#26a69a',
         wickDownColor: '#ef5350',
+        priceLineVisible: true,
+        lastValueVisible: true,
     });
 
-    // Handle window resize
+    // Handle window resize with debouncing
+    let resizeTimeout;
     window.addEventListener('resize', () => {
-        if (chart && container) {
-            chart.applyOptions({
-                width: container.clientWidth,
-                height: container.clientHeight,
-            });
-        }
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            if (chart && container) {
+                const newWidth = container.clientWidth;
+                const newHeight = container.clientHeight;
+                
+                if (newWidth > 0 && newHeight > 0) {
+                    chart.applyOptions({
+                        width: newWidth,
+                        height: newHeight,
+                    });
+                    
+                    // Update mobile settings if needed
+                    const nowMobile = window.innerWidth <= 768;
+                    chart.applyOptions({
+                        layout: {
+                            fontSize: nowMobile ? 11 : 12,
+                        },
+                        grid: {
+                            vertLines: {
+                                visible: !nowMobile,
+                            },
+                        },
+                        timeScale: {
+                            rightOffset: nowMobile ? 5 : 10,
+                            barSpacing: nowMobile ? 6 : 8,
+                            minBarSpacing: nowMobile ? 2 : 3,
+                        },
+                        handleScroll: {
+                            mouseWheel: !nowMobile,
+                        },
+                        handleScale: {
+                            mouseWheel: !nowMobile,
+                        },
+                    });
+                    
+                    console.log(`Chart resized: ${newWidth}x${newHeight}`);
+                }
+            }
+        }, 250);
     });
 
-    console.log('Chart initialized successfully');
+    // Handle orientation change for mobile
+    window.addEventListener('orientationchange', () => {
+        setTimeout(() => {
+            if (chart && container) {
+                chart.applyOptions({
+                    width: container.clientWidth,
+                    height: container.clientHeight,
+                });
+                console.log('Chart adjusted for orientation change');
+            }
+        }, 300);
+    });
+
+    console.log('Chart initialized successfully (Mobile: ' + isMobile + ')');
 }
 
 // Setup event listeners
@@ -141,6 +225,8 @@ async function loadChartData() {
         const interval = getInterval(currentTimeframe);
         const limit = getLimit(currentTimeframe);
         
+        console.log(`Loading ${limit} candles for ${interval} timeframe...`);
+        
         // Fetch klines (candlestick data) from Binance
         const response = await fetch(
             `https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=${interval}&limit=${limit}`
@@ -151,6 +237,10 @@ async function loadChartData() {
         }
         
         const data = await response.json();
+        
+        if (!data || data.length === 0) {
+            throw new Error('No data received from API');
+        }
         
         // Transform data to Lightweight Charts format
         const candleData = data.map(candle => ({
@@ -168,7 +258,13 @@ async function loadChartData() {
         // Update chart
         if (candleSeries) {
             candleSeries.setData(candleData);
-            console.log(`Loaded ${candleData.length} candles`);
+            
+            // Fit content on mobile
+            if (window.innerWidth <= 768) {
+                chart.timeScale().fitContent();
+            }
+            
+            console.log(`✅ Loaded ${candleData.length} candles successfully`);
         }
         
         // Update price display with latest candle
@@ -189,8 +285,14 @@ async function loadChartData() {
         }
         
     } catch (error) {
-        console.error('Error loading chart data:', error);
+        console.error('❌ Error loading chart data:', error);
         updateStatus('Error loading data', false);
+        
+        // Retry after 3 seconds
+        setTimeout(() => {
+            console.log('Retrying to load chart data...');
+            loadChartData();
+        }, 3000);
     }
 }
 
