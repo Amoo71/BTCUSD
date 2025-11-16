@@ -116,16 +116,23 @@ function setupEventListeners() {
             // Update AI button state
             updateAIButtonState();
             
-            // Reconnect WebSocket with new timeframe
+            // Close AI if active and not allowed on new timeframe
+            if (aiAnalysisActive && !isAIAllowed()) {
+                closeAIPanel();
+            }
+            
+            // Reconnect WebSocket with new timeframe (only for non-daily timeframes)
             if (ws) {
                 ws.close();
             }
-            if (tradesWs) {
-                tradesWs.close();
-            }
             
+            // Load new data
             loadChartData();
-            connectWebSocket();
+            
+            // Reconnect WebSocket only for intraday timeframes
+            if (!['1d', '15d', '30d'].includes(newTimeframe)) {
+                connectWebSocket();
+            }
         });
     });
 
@@ -156,7 +163,7 @@ async function loadChartData() {
         const interval = getInterval(currentTimeframe);
         const limit = getLimit(currentTimeframe);
         
-        console.log(`Loading ${limit} candles for ${interval} timeframe...`);
+        console.log(`📊 Loading ${limit} candles for ${currentTimeframe} (API interval: ${interval})...`);
         
         // Fetch klines (candlestick data) from Binance
         const response = await fetch(
@@ -189,7 +196,7 @@ async function loadChartData() {
         // Update chart
         if (candleSeries) {
             candleSeries.setData(candleData);
-            console.log(`✅ Loaded ${candleData.length} candles successfully`);
+            console.log(`✅ Loaded ${candleData.length} candles for ${currentTimeframe} successfully`);
         }
         
         // Update price display with latest candle
@@ -201,11 +208,17 @@ async function loadChartData() {
         // Fetch 24h stats
         await fetch24hStats();
         
-        updateStatus('Live', true);
+        // Update status based on timeframe
+        if (['1d', '15d', '30d'].includes(currentTimeframe)) {
+            updateStatus('Historical Data', true);
+        } else {
+            updateStatus('Live', true);
+        }
+        
         updateLastUpdateTime();
         
-        // Re-run AI analysis if active
-        if (aiAnalysisActive) {
+        // Re-run AI analysis if active and allowed
+        if (aiAnalysisActive && isAIAllowed()) {
             runAIAnalysis();
         }
         
@@ -215,7 +228,7 @@ async function loadChartData() {
         
         // Retry after 3 seconds
         setTimeout(() => {
-            console.log('Retrying to load chart data...');
+            console.log('🔄 Retrying to load chart data...');
             loadChartData();
         }, 3000);
     }
@@ -229,6 +242,9 @@ function getInterval(timeframe) {
         '15m': '15m',
         '30m': '30m',
         '1h': '1h',
+        '1d': '1d',
+        '15d': '1d',  // Use daily data for 15d
+        '30d': '1d',  // Use daily data for 30d
     };
     return map[timeframe] || '1m';
 }
@@ -241,6 +257,9 @@ function getLimit(timeframe) {
         '15m': 500,
         '30m': 500,
         '1h': 500,
+        '1d': 365,
+        '15d': 15,   // 15 days
+        '30d': 30,   // 30 days
     };
     return map[timeframe] || 500;
 }
@@ -386,12 +405,15 @@ function connectWebSocket() {
 
 // Connect to kline WebSocket (normal timeframes)
 function connectKlineWebSocket() {
-    const wsUrl = 'wss://stream.binance.com:9443/ws/btcusdt@kline_' + getInterval(currentTimeframe);
+    const interval = getInterval(currentTimeframe);
+    const wsUrl = 'wss://stream.binance.com:9443/ws/btcusdt@kline_' + interval;
+    
+    console.log(`📡 Connecting to WebSocket: ${wsUrl}`);
     
     ws = new WebSocket(wsUrl);
     
     ws.onopen = () => {
-        console.log('Kline WebSocket connected');
+        console.log('✅ Kline WebSocket connected for', currentTimeframe);
         updateStatus('Live', true);
     };
     
@@ -407,6 +429,7 @@ function connectKlineWebSocket() {
                 high: parseFloat(kline.h),
                 low: parseFloat(kline.l),
                 close: parseFloat(kline.c),
+                volume: parseFloat(kline.v),
             };
             
             candleSeries.update(candle);
@@ -420,20 +443,28 @@ function connectKlineWebSocket() {
                     historicalData[historicalData.length - 1] = candle;
                 } else {
                     historicalData.push(candle);
+                    // Keep only reasonable amount
+                    if (historicalData.length > 1000) {
+                        historicalData.shift();
+                    }
                 }
             }
         }
     };
     
     ws.onerror = (error) => {
-        console.error('WebSocket error:', error);
+        console.error('❌ WebSocket error:', error);
         updateStatus('Connection error', false);
     };
     
     ws.onclose = () => {
-        console.log('WebSocket closed, reconnecting...');
+        console.log('🔌 WebSocket closed, reconnecting...');
         updateStatus('Reconnecting...', false);
-        setTimeout(connectWebSocket, 3000);
+        
+        // Only reconnect if still on intraday timeframe
+        if (!['1d', '15d', '30d'].includes(currentTimeframe)) {
+            setTimeout(connectWebSocket, 3000);
+        }
     };
 }
 
@@ -1066,6 +1097,9 @@ function getTimeIncrement(timeframe) {
         '15m': 900,
         '30m': 1800,
         '1h': 3600,
+        '1d': 86400,
+        '15d': 86400,
+        '30d': 86400,
     };
     return map[timeframe] || 60;
 }
