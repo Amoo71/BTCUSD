@@ -38,38 +38,19 @@ function initializeChart() {
         return;
     }
 
-    // Detect mobile device
-    const isMobile = window.innerWidth <= 768;
-
     chart = LightweightCharts.createChart(container, {
         width: container.clientWidth,
         height: container.clientHeight,
         layout: {
             background: { color: '#1e222d' },
             textColor: '#d1d4dc',
-            fontSize: isMobile ? 11 : 12,
         },
         grid: {
-            vertLines: { 
-                color: '#2a2e39',
-                visible: !isMobile, // Hide vertical lines on mobile for cleaner look
-            },
-            horzLines: { 
-                color: '#2a2e39',
-            },
+            vertLines: { color: '#2a2e39' },
+            horzLines: { color: '#2a2e39' },
         },
         crosshair: {
             mode: LightweightCharts.CrosshairMode.Normal,
-            vertLine: {
-                width: isMobile ? 1 : 1,
-                color: '#758696',
-                style: 3,
-            },
-            horzLine: {
-                width: isMobile ? 1 : 1,
-                color: '#758696',
-                style: 3,
-            },
         },
         rightPriceScale: {
             borderColor: '#2a2e39',
@@ -77,30 +58,26 @@ function initializeChart() {
                 top: 0.1,
                 bottom: 0.1,
             },
-            visible: true,
         },
         timeScale: {
             borderColor: '#2a2e39',
             timeVisible: true,
             secondsVisible: false,
-            rightOffset: isMobile ? 5 : 10,
-            barSpacing: isMobile ? 6 : 8,
-            minBarSpacing: isMobile ? 2 : 3,
         },
         handleScroll: {
-            mouseWheel: !isMobile,
+            mouseWheel: true,
             pressedMouseMove: true,
             horzTouchDrag: true,
             vertTouchDrag: true,
         },
         handleScale: {
             axisPressedMouseMove: true,
-            mouseWheel: !isMobile,
+            mouseWheel: true,
             pinch: true,
         },
     });
 
-    // Create candlestick series with mobile-optimized settings
+    // Create candlestick series
     candleSeries = chart.addCandlestickSeries({
         upColor: '#26a69a',
         downColor: '#ef5350',
@@ -108,69 +85,23 @@ function initializeChart() {
         borderDownColor: '#ef5350',
         wickUpColor: '#26a69a',
         wickDownColor: '#ef5350',
-        priceLineVisible: true,
-        lastValueVisible: true,
     });
 
-    // Handle window resize with debouncing
+    // Handle window resize
     let resizeTimeout;
     window.addEventListener('resize', () => {
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(() => {
             if (chart && container) {
-                const newWidth = container.clientWidth;
-                const newHeight = container.clientHeight;
-                
-                if (newWidth > 0 && newHeight > 0) {
-                    chart.applyOptions({
-                        width: newWidth,
-                        height: newHeight,
-                    });
-                    
-                    // Update mobile settings if needed
-                    const nowMobile = window.innerWidth <= 768;
-                    chart.applyOptions({
-                        layout: {
-                            fontSize: nowMobile ? 11 : 12,
-                        },
-                        grid: {
-                            vertLines: {
-                                visible: !nowMobile,
-                            },
-                        },
-                        timeScale: {
-                            rightOffset: nowMobile ? 5 : 10,
-                            barSpacing: nowMobile ? 6 : 8,
-                            minBarSpacing: nowMobile ? 2 : 3,
-                        },
-                        handleScroll: {
-                            mouseWheel: !nowMobile,
-                        },
-                        handleScale: {
-                            mouseWheel: !nowMobile,
-                        },
-                    });
-                    
-                    console.log(`Chart resized: ${newWidth}x${newHeight}`);
-                }
-            }
-        }, 250);
-    });
-
-    // Handle orientation change for mobile
-    window.addEventListener('orientationchange', () => {
-        setTimeout(() => {
-            if (chart && container) {
                 chart.applyOptions({
                     width: container.clientWidth,
                     height: container.clientHeight,
                 });
-                console.log('Chart adjusted for orientation change');
             }
-        }, 300);
+        }, 100);
     });
 
-    console.log('Chart initialized successfully (Mobile: ' + isMobile + ')');
+    console.log('Chart initialized successfully');
 }
 
 // Setup event listeners
@@ -258,12 +189,6 @@ async function loadChartData() {
         // Update chart
         if (candleSeries) {
             candleSeries.setData(candleData);
-            
-            // Fit content on mobile
-            if (window.innerWidth <= 768) {
-                chart.timeScale().fitContent();
-            }
-            
             console.log(`✅ Loaded ${candleData.length} candles successfully`);
         }
         
