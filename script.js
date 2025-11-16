@@ -206,89 +206,98 @@ function translateSignal(signal, lang) {
         // Translate signal types
         let message = signal.message;
         
-        // RSI translations
-        message = message.replace('RSI Oversold', 'RSI Überverkauft');
-        message = message.replace('RSI Overbought', 'RSI Überkauft');
-        message = message.replace('Strong reversal potential', 'Starkes Umkehrpotenzial');
-        message = message.replace('Reversal risk high', 'Hohes Umkehrrisiko');
-        message = message.replace('Bullish territory', 'Bullisches Territorium');
-        message = message.replace('Bearish territory', 'Bärisches Territorium');
+        // Basic replacements
+        message = message.replace(/RSI Oversold/gi, 'RSI Überverkauft');
+        message = message.replace(/RSI Overbought/gi, 'RSI Überkauft');
+        message = message.replace(/RSI below/gi, 'RSI unter');
+        message = message.replace(/RSI above/gi, 'RSI über');
+        message = message.replace(/Strong reversal potential/gi, 'Starkes Umkehrpotenzial');
+        message = message.replace(/Reversal risk high/gi, 'Hohes Umkehrrisiko');
+        message = message.replace(/reversal upward/gi, 'Umkehr nach oben');
+        message = message.replace(/reversal downward/gi, 'Umkehr nach unten');
+        message = message.replace(/Potential reversal/gi, 'Potenzielle Umkehr');
+        message = message.replace(/Bullish territory/gi, 'Bullisches Territorium');
+        message = message.replace(/Bearish territory/gi, 'Bärisches Territorium');
         
         // EMA translations
-        message = message.replace('Perfect EMA alignment', 'Perfekte EMA-Ausrichtung');
-        message = message.replace('Strong uptrend structure', 'Starke Aufwärtstrendstruktur');
-        message = message.replace('Strong downtrend structure', 'Starke Abwärtstrendstruktur');
-        message = message.replace('Price above key moving averages', 'Preis über wichtigen gleitenden Durchschnitten');
-        message = message.replace('Uptrend confirmed', 'Aufwärtstrend bestätigt');
-        message = message.replace('Price below key moving averages', 'Preis unter wichtigen gleitenden Durchschnitten');
-        message = message.replace('Downtrend confirmed', 'Abwärtstrend bestätigt');
-        message = message.replace('Mean reversion likely', 'Mittelwert-Rückkehr wahrscheinlich');
-        message = message.replace('above', 'über');
-        message = message.replace('below', 'unter');
+        message = message.replace(/Perfect EMA alignment/gi, 'Perfekte EMA-Ausrichtung');
+        message = message.replace(/Strong uptrend structure/gi, 'Starke Aufwärtstrendstruktur');
+        message = message.replace(/Strong downtrend structure/gi, 'Starke Abwärtstrendstruktur');
+        message = message.replace(/Price above key moving averages/gi, 'Preis über wichtigen gleitenden Durchschnitten');
+        message = message.replace(/Uptrend confirmed/gi, 'Aufwärtstrend bestätigt');
+        message = message.replace(/Price below key moving averages/gi, 'Preis unter wichtigen gleitenden Durchschnitten');
+        message = message.replace(/Downtrend confirmed/gi, 'Abwärtstrend bestätigt');
+        message = message.replace(/Mean reversion likely/gi, 'Mittelwert-Rückkehr wahrscheinlich');
+        message = message.replace(/Price/gi, 'Preis');
+        message = message.replace(/\sabove\s/gi, ' über ');
+        message = message.replace(/\sbelow\s/gi, ' unter ');
+        message = message.replace(/\sby\s/gi, ' um ');
         
         // MACD translations
-        message = message.replace('MACD bullish with positive momentum', 'MACD bullisch mit positivem Momentum');
-        message = message.replace('Trend acceleration', 'Trendbeschleunigung');
-        message = message.replace('MACD bearish with negative momentum', 'MACD bärisch mit negativem Momentum');
-        message = message.replace('Downward pressure', 'Abwärtsdruck');
-        message = message.replace('MACD bullish crossover', 'MACD bullischer Crossover');
-        message = message.replace('Momentum increasing', 'Momentum steigend');
-        message = message.replace('MACD bearish crossover', 'MACD bärischer Crossover');
-        message = message.replace('Momentum decreasing', 'Momentum fallend');
+        message = message.replace(/MACD bullish with positive momentum/gi, 'MACD bullisch mit positivem Momentum');
+        message = message.replace(/Trend acceleration/gi, 'Trendbeschleunigung');
+        message = message.replace(/MACD bearish with negative momentum/gi, 'MACD bärisch mit negativem Momentum');
+        message = message.replace(/Downward pressure/gi, 'Abwärtsdruck');
+        message = message.replace(/MACD bullish crossover/gi, 'MACD bullischer Crossover');
+        message = message.replace(/Momentum increasing/gi, 'Momentum steigend');
+        message = message.replace(/MACD bearish crossover/gi, 'MACD bärischer Crossover');
+        message = message.replace(/Momentum decreasing/gi, 'Momentum fallend');
         
         // Stochastic translations
-        message = message.replace('Stochastic RSI oversold with bullish cross', 'Stochastischer RSI überverkauft mit bullischem Cross');
-        message = message.replace('Entry opportunity', 'Einstiegsgelegenheit');
-        message = message.replace('Stochastic RSI overbought with bearish cross', 'Stochastischer RSI überkauft mit bärischem Cross');
-        message = message.replace('Exit signal', 'Ausstiegssignal');
+        message = message.replace(/Stochastic RSI oversold with bullish cross/gi, 'Stochastischer RSI überverkauft mit bullischem Cross');
+        message = message.replace(/Entry opportunity/gi, 'Einstiegsgelegenheit');
+        message = message.replace(/Stochastic RSI overbought with bearish cross/gi, 'Stochastischer RSI überkauft mit bärischem Cross');
+        message = message.replace(/Exit signal/gi, 'Ausstiegssignal');
         
         // Bollinger Bands
-        message = message.replace('Price near lower Bollinger Band', 'Preis nahe unterem Bollinger Band');
-        message = message.replace('Oversold bounce likely', 'Überverkaufter Bounce wahrscheinlich');
-        message = message.replace('Price near upper Bollinger Band', 'Preis nahe oberem Bollinger Band');
-        message = message.replace('Overbought pullback likely', 'Überkaufter Pullback wahrscheinlich');
+        message = message.replace(/Price near lower Bollinger Band/gi, 'Preis nahe unterem Bollinger Band');
+        message = message.replace(/Oversold bounce likely/gi, 'Überverkaufter Bounce wahrscheinlich');
+        message = message.replace(/Price near upper Bollinger Band/gi, 'Preis nahe oberem Bollinger Band');
+        message = message.replace(/Overbought pullback likely/gi, 'Überkaufter Pullback wahrscheinlich');
         
         // Volume
-        message = message.replace('Exceptional volume', 'Außergewöhnliches Volumen');
-        message = message.replace('avg', 'Durchschn');
-        message = message.replace('Strong trend confirmation', 'Starke Trendbestätigung');
-        message = message.replace('High volume', 'Hohes Volumen');
-        message = message.replace('Trend confirmation', 'Trendbestätigung');
-        message = message.replace('Low volume', 'Niedriges Volumen');
-        message = message.replace('Weak trend, be cautious', 'Schwacher Trend, Vorsicht');
+        message = message.replace(/Exceptional volume/gi, 'Außergewöhnliches Volumen');
+        message = message.replace(/\savg\)/gi, ' Durchschn)');
+        message = message.replace(/Strong trend confirmation/gi, 'Starke Trendbestätigung');
+        message = message.replace(/High volume/gi, 'Hohes Volumen');
+        message = message.replace(/Trend confirmation/gi, 'Trendbestätigung');
+        message = message.replace(/Low volume/gi, 'Niedriges Volumen');
+        message = message.replace(/Weak trend, be cautious/gi, 'Schwacher Trend, Vorsicht');
         
         // Support/Resistance
-        message = message.replace('Near support at', 'Nahe Unterstützung bei');
-        message = message.replace('Bounce opportunity', 'Bounce-Gelegenheit');
-        message = message.replace('Near resistance at', 'Nahe Widerstand bei');
-        message = message.replace('Rejection risk', 'Ablehnungsrisiko');
+        message = message.replace(/Near support at/gi, 'Nahe Unterstützung bei');
+        message = message.replace(/Bounce opportunity/gi, 'Bounce-Gelegenheit');
+        message = message.replace(/Near resistance at/gi, 'Nahe Widerstand bei');
+        message = message.replace(/Rejection risk/gi, 'Ablehnungsrisiko');
         
         // Patterns
-        message = message.replace('bullish pattern', 'bullisches Muster');
-        message = message.replace('bearish pattern', 'bärisches Muster');
-        message = message.replace('detected', 'erkannt');
+        message = message.replace(/bullish pattern/gi, 'bullisches Muster');
+        message = message.replace(/bearish pattern/gi, 'bärisches Muster');
+        message = message.replace(/\sdetected/gi, ' erkannt');
         
         // Smart Money
-        message = message.replace('Bullish Order Block', 'Bullischer Order Block');
-        message = message.replace('Bearish Order Block', 'Bärischer Order Block');
-        message = message.replace('Institutional support', 'Institutionelle Unterstützung');
-        message = message.replace('Institutional resistance', 'Institutioneller Widerstand');
+        message = message.replace(/Bullish Order Block\(s\)/gi, 'Bullische(r) Order Block(s)');
+        message = message.replace(/Bearish Order Block\(s\)/gi, 'Bärische(r) Order Block(s)');
+        message = message.replace(/Bullish Order Block/gi, 'Bullischer Order Block');
+        message = message.replace(/Bearish Order Block/gi, 'Bärischer Order Block');
+        message = message.replace(/Institutional support/gi, 'Institutionelle Unterstützung');
+        message = message.replace(/Institutional resistance/gi, 'Institutioneller Widerstand');
         
         // Fibonacci
-        message = message.replace('Price near Fibonacci', 'Preis nahe Fibonacci');
-        message = message.replace('level', 'Niveau');
-        message = message.replace('Key decision point', 'Wichtiger Entscheidungspunkt');
+        message = message.replace(/Price near Fibonacci/gi, 'Preis nahe Fibonacci');
+        message = message.replace(/\slevel\s/gi, ' Niveau ');
+        message = message.replace(/Key decision point/gi, 'Wichtiger Entscheidungspunkt');
         
         // Market Structure
-        message = message.replace('Market structure:', 'Marktstruktur:');
-        message = message.replace('Higher highs and higher lows confirmed', 'Höhere Hochs und höhere Tiefs bestätigt');
-        message = message.replace('Lower highs and lower lows confirmed', 'Tiefere Hochs und tiefere Tiefs bestätigt');
+        message = message.replace(/Market structure:/gi, 'Marktstruktur:');
+        message = message.replace(/Higher highs and higher lows confirmed/gi, 'Höhere Hochs und höhere Tiefs bestätigt');
+        message = message.replace(/Lower highs and lower lows confirmed/gi, 'Tiefere Hochs und tiefere Tiefs bestätigt');
         
         // Volatility
-        message = message.replace('Extreme volatility', 'Extreme Volatilität');
-        message = message.replace('High risk environment', 'Hochrisiko-Umgebung');
-        message = message.replace('High volatility detected', 'Hohe Volatilität erkannt');
-        message = message.replace('Trade with caution', 'Mit Vorsicht handeln');
+        message = message.replace(/Extreme volatility/gi, 'Extreme Volatilität');
+        message = message.replace(/High risk environment/gi, 'Hochrisiko-Umgebung');
+        message = message.replace(/High volatility detected/gi, 'Hohe Volatilität erkannt');
+        message = message.replace(/Trade with caution/gi, 'Mit Vorsicht handeln');
         
         // Strength indicators
         const strengthMap = {
