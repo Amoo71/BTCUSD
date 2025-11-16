@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>BTC/USD - Live Chart</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="toolbar">
+            <div class="toolbar-left">
+                <div class="symbol-info">
+                    <h1>BTCUSD</h1>
+                    <span class="exchange">Binance</span>
+                </div>
+                <div class="price-display">
+                    <div class="current-price" id="currentPrice">--</div>
+                    <div class="price-change" id="priceChange">--</div>
+                </div>
+            </div>
+            <div class="toolbar-right">
+                <div class="timeframe-buttons">
+                    <button class="timeframe-btn active" data-timeframe="1m">1m</button>
+                    <button class="timeframe-btn" data-timeframe="5m">5m</button>
+                    <button class="timeframe-btn" data-timeframe="15m">15m</button>
+                    <button class="timeframe-btn" data-timeframe="30m">30m</button>
+                    <button class="timeframe-btn" data-timeframe="1h">1h</button>
+                </div>
+                <button class="ai-btn" id="aiAnalyzeBtn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                        <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                    </svg>
+                    AI Analyze
+                </button>
+            </div>
+        </div>
+
+        <div class="chart-wrapper">
+            <div id="chart-container"></div>
+        </div>
+
+        <div class="stats-panel">
+            <div class="stat-item">
+                <span class="stat-label">24h High</span>
+                <span class="stat-value" id="high24h">--</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <span class="stat-label">24h Low</span>
+                <span class="stat-value" id="low24h">--</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <span class="stat-label">24h Volume</span>
+                <span class="stat-value" id="volume24h">--</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <span class="stat-label">Market Cap</span>
+                <span class="stat-value" id="marketCap">--</span>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span class="status-indicator"></span>
+            <span id="statusText">Connecting...</span>
+            <div class="ai-status" id="aiStatus" style="display: none;">
+                <span class="ai-indicator"></span>
+                <span id="aiStatusText">AI Analysis Active</span>
+            </div>
+            <span class="last-update">Last update: <span id="lastUpdate">--</span></span>
+        </div>
+
+        <!-- AI Analysis Panel -->
+        <div class="ai-panel" id="aiPanel">
+            <div class="ai-panel-header">
+                <h3>AI Market Analysis</h3>
+                <button class="close-btn" id="closeAiPanel">&times;</button>
+            </div>
+            <div class="ai-panel-content">
+                <div class="ai-prediction">
+                    <div class="prediction-header">
+                        <span class="prediction-label">Prediction Confidence</span>
+                        <span class="prediction-value" id="confidenceValue">--</span>
+                    </div>
+                    <div class="confidence-bar">
+                        <div class="confidence-fill" id="confidenceFill"></div>
+                    </div>
+                </div>
+
+                <div class="ai-signals">
+                    <h4>Trading Signals</h4>
+                    <div class="signal-list" id="signalList">
+                        <div class="signal-item loading">Analyzing market data...</div>
+                    </div>
+                </div>
+
+                <div class="ai-positions">
+                    <h4>Recommended Positions</h4>
+                    <div class="position-cards" id="positionCards">
+                        <!-- Will be filled by JS -->
+                    </div>
+                </div>
+
+                <div class="ai-metrics">
+                    <div class="metric-item">
+                        <span class="metric-label">Trend Direction</span>
+                        <span class="metric-value" id="trendDirection">--</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">Volatility</span>
+                        <span class="metric-value" id="volatility">--</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">Next Target</span>
+                        <span class="metric-value" id="nextTarget">--</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="ai-helpers.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
