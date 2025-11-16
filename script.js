@@ -178,8 +178,16 @@ function setupEventListeners() {
 function toggleLanguage() {
     currentLanguage = currentLanguage === 'en' ? 'de' : 'en';
     localStorage.setItem('chartLanguage', currentLanguage);
-    applyLanguage(currentLanguage);
     console.log(`🌐 Language switched to: ${currentLanguage === 'en' ? 'English' : 'Deutsch'}`);
+    
+    // Apply to static elements
+    applyLanguage(currentLanguage);
+    
+    // Re-translate AI panel content if it's open
+    if (aiAnalysisActive && lastAIAnalysis && lastAIAnalysis.indicators) {
+        console.log('🔄 Re-translating AI analysis content...');
+        updateAIPanelWithLanguage(lastAIAnalysis, lastAIAnalysis.indicators);
+    }
 }
 
 // Apply language to all elements
@@ -190,11 +198,6 @@ function applyLanguage(lang) {
             element.textContent = text;
         }
     });
-    
-    // Re-translate AI analysis if panel is open
-    if (aiAnalysisActive && lastAIAnalysis) {
-        updateAIPanelWithLanguage(lastAIAnalysis, lastAIAnalysis.indicators);
-    }
 }
 
 // Translate signal messages
@@ -832,7 +835,11 @@ function runAIAnalysis() {
         }
     }
     
-    lastAIAnalysis = prediction;
+    // Store with indicators for language switching
+    lastAIAnalysis = {
+        ...prediction,
+        indicators: indicators
+    };
     
     // Phase 8: Draw intelligent chart annotations
     drawAIChartAnnotations(prediction, indicators, patterns, marketStructure);
