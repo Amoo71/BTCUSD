@@ -41,7 +41,14 @@
                         <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
                         <line x1="12" y1="22.08" x2="12" y2="12"></line>
                     </svg>
-                    AI Analyze
+                    <span data-lang-en="AI Analyze" data-lang-de="KI Analyse">AI Analyze</span>
+                </button>
+                <button class="lang-btn" id="langBtn" title="Switch Language / Sprache wechseln">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="2" y1="12" x2="22" y2="12"></line>
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                    </svg>
                 </button>
             </div>
         </div>
@@ -52,46 +59,46 @@
 
         <div class="stats-panel">
             <div class="stat-item">
-                <span class="stat-label">24h High</span>
+                <span class="stat-label" data-lang-en="24h High" data-lang-de="24h Hoch">24h High</span>
                 <span class="stat-value" id="high24h">--</span>
             </div>
             <div class="stat-divider"></div>
             <div class="stat-item">
-                <span class="stat-label">24h Low</span>
+                <span class="stat-label" data-lang-en="24h Low" data-lang-de="24h Tief">24h Low</span>
                 <span class="stat-value" id="low24h">--</span>
             </div>
             <div class="stat-divider"></div>
             <div class="stat-item">
-                <span class="stat-label">24h Volume</span>
+                <span class="stat-label" data-lang-en="24h Volume" data-lang-de="24h Volumen">24h Volume</span>
                 <span class="stat-value" id="volume24h">--</span>
             </div>
             <div class="stat-divider"></div>
             <div class="stat-item">
-                <span class="stat-label">Market Cap</span>
+                <span class="stat-label" data-lang-en="Market Cap" data-lang-de="Marktkapitalisierung">Market Cap</span>
                 <span class="stat-value" id="marketCap">--</span>
             </div>
         </div>
 
         <div class="status-bar">
             <span class="status-indicator"></span>
-            <span id="statusText">Connecting...</span>
+            <span id="statusText" data-lang-en="Connecting..." data-lang-de="Verbinde...">Connecting...</span>
             <div class="ai-status" id="aiStatus" style="display: none;">
                 <span class="ai-indicator"></span>
-                <span id="aiStatusText">AI Analysis Active</span>
+                <span id="aiStatusText" data-lang-en="AI Analysis Active - Adaptive Mode" data-lang-de="KI-Analyse Aktiv - Adaptiver Modus">AI Analysis Active - Adaptive Mode</span>
             </div>
-            <span class="last-update">Last update: <span id="lastUpdate">--</span></span>
+            <span class="last-update"><span data-lang-en="Last update:" data-lang-de="Letzte Aktualisierung:">Last update:</span> <span id="lastUpdate">--</span></span>
         </div>
 
         <!-- AI Analysis Panel -->
         <div class="ai-panel" id="aiPanel">
             <div class="ai-panel-header">
-                <h3>AI Market Analysis</h3>
+                <h3 data-lang-en="AI Market Analysis" data-lang-de="KI-Marktanalyse">AI Market Analysis</h3>
                 <button class="close-btn" id="closeAiPanel">&times;</button>
             </div>
             <div class="ai-panel-content">
                 <div class="ai-prediction">
                     <div class="prediction-header">
-                        <span class="prediction-label">Prediction Confidence</span>
+                        <span class="prediction-label" data-lang-en="Prediction Confidence" data-lang-de="Vorhersagesicherheit">Prediction Confidence</span>
                         <span class="prediction-value" id="confidenceValue">--</span>
                     </div>
                     <div class="confidence-bar">
@@ -100,14 +107,14 @@
                 </div>
 
                 <div class="ai-signals">
-                    <h4>Trading Signals</h4>
+                    <h4 data-lang-en="Trading Signals" data-lang-de="Handelssignale">Trading Signals</h4>
                     <div class="signal-list" id="signalList">
-                        <div class="signal-item loading">Analyzing market data...</div>
+                        <div class="signal-item loading" data-lang-en="Analyzing market data..." data-lang-de="Analysiere Marktdaten...">Analyzing market data...</div>
                     </div>
                 </div>
 
                 <div class="ai-positions">
-                    <h4>Recommended Positions</h4>
+                    <h4 data-lang-en="Recommended Positions" data-lang-de="Empfohlene Positionen">Recommended Positions</h4>
                     <div class="position-cards" id="positionCards">
                         <!-- Will be filled by JS -->
                     </div>
@@ -115,15 +122,15 @@
 
                 <div class="ai-metrics">
                     <div class="metric-item">
-                        <span class="metric-label">Trend Direction</span>
+                        <span class="metric-label" data-lang-en="Trend Direction" data-lang-de="Trendrichtung">Trend Direction</span>
                         <span class="metric-value" id="trendDirection">--</span>
                     </div>
                     <div class="metric-item">
-                        <span class="metric-label">Volatility</span>
+                        <span class="metric-label" data-lang-en="Volatility" data-lang-de="Volatilität">Volatility</span>
                         <span class="metric-value" id="volatility">--</span>
                     </div>
                     <div class="metric-item">
-                        <span class="metric-label">Next Target</span>
+                        <span class="metric-label" data-lang-en="Next Target" data-lang-de="Nächstes Ziel">Next Target</span>
                         <span class="metric-value" id="nextTarget">--</span>
                     </div>
                 </div>

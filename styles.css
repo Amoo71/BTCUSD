@@ -161,6 +161,39 @@ body {
     }
 }
 
+/* Language Button */
+.lang-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 40px;
+    min-height: 40px;
+}
+
+.lang-btn:hover {
+    background: var(--hover-bg);
+    border-color: var(--accent-blue);
+}
+
+.lang-btn:active {
+    transform: scale(0.95);
+}
+
+.lang-btn svg {
+    transition: transform 0.3s ease;
+}
+
+.lang-btn:hover svg {
+    transform: rotate(180deg);
+}
+
 /* Timeframe Buttons */
 .timeframe-buttons {
     display: flex;

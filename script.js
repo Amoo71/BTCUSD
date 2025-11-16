@@ -12,6 +12,9 @@ let aiUpdateInterval = null;
 let historicalData = [];
 let lastAIAnalysis = null;
 
+// Language system
+let currentLanguage = 'en'; // Default English
+
 // Binance WebSocket for real-time updates
 let ws = null;
 
@@ -21,6 +24,14 @@ const AI_ALLOWED_TIMEFRAMES = ['1m', '5m', '15m', '30m'];
 // Initialize the application
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Initializing ULTIMATE AI Chart System...');
+    
+    // Load saved language
+    const savedLang = localStorage.getItem('chartLanguage');
+    if (savedLang) {
+        currentLanguage = savedLang;
+        applyLanguage(currentLanguage);
+    }
+    
     initializeChart();
     setupEventListeners();
     updateAIButtonState();
@@ -153,6 +164,32 @@ function setupEventListeners() {
             closeAIPanel();
         });
     }
+    
+    // Language switcher button
+    const langBtn = document.getElementById('langBtn');
+    if (langBtn) {
+        langBtn.addEventListener('click', () => {
+            toggleLanguage();
+        });
+    }
+}
+
+// Toggle language between English and German
+function toggleLanguage() {
+    currentLanguage = currentLanguage === 'en' ? 'de' : 'en';
+    localStorage.setItem('chartLanguage', currentLanguage);
+    applyLanguage(currentLanguage);
+    console.log(`🌐 Language switched to: ${currentLanguage === 'en' ? 'English' : 'Deutsch'}`);
+}
+
+// Apply language to all elements
+function applyLanguage(lang) {
+    document.querySelectorAll('[data-lang-en][data-lang-de]').forEach(element => {
+        const text = element.getAttribute(`data-lang-${lang}`);
+        if (text) {
+            element.textContent = text;
+        }
+    });
 }
 
 // Load chart data from Binance API
